@@ -31,8 +31,8 @@ class PackageManagerHttpClientSpec extends Specification {
         mojo.port >> 4502
         mojo.username >> "admin"
         mojo.password >> "admin"
-        mojo.retryDelay >> 1
-        mojo.retryLimit >> 1
+        mojo.retryDelay >> 1000
+        mojo.retryLimit >> 5
         mojo.force >> true
         mojo.command >> "upload"
         mojo.fileName >> ""

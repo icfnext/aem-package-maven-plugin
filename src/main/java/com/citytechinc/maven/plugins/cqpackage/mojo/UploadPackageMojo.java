@@ -21,6 +21,8 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
             final PackageManagerResponse response = new PackageManagerHttpClient(this).getResponse();
 
             if (response.isSuccess()) {
+
+
                 final String packagePath = response.getPath();
 
                 session.getUserProperties().put(PROPERTY_PACKAGE_PATH, packagePath);

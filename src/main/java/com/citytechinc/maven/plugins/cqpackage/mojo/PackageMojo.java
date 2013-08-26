@@ -1,6 +1,7 @@
 package com.citytechinc.maven.plugins.cqpackage.mojo;
 
 import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
+import org.apache.maven.plugin.logging.Log;
 
 public interface PackageMojo {
 
@@ -9,6 +10,8 @@ public interface PackageMojo {
     String getFileName();
 
     String getHost();
+
+    Log getLog();
 
     String getPassword();
 
@@ -23,4 +26,6 @@ public interface PackageMojo {
     String getUsername();
 
     boolean isForce();
+
+    boolean isQuiet();
 }

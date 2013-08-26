@@ -111,4 +111,9 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     public boolean isForce() {
         return force;
     }
+
+    @Override
+    public boolean isQuiet() {
+        return quiet;
+    }
 }
