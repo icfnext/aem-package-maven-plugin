@@ -8,12 +8,16 @@ class UploadPackageMojoSpec extends AbstractPackageMojoSpec {
         setup:
         def mojo = new UploadPackageMojo()
 
+        mojo.force = true
+
         setProperties(mojo)
 
-        def httpClient = new PackageManagerHttpClient(mojo, getPackageFile())
+        def httpClient = new PackageManagerHttpClient(mojo)
+
+        def packageFile = getPackageFile()
 
         expect:
-        httpClient.response
+        httpClient.getResponse(packageFile)
     }
 
     def getPackageFile() {

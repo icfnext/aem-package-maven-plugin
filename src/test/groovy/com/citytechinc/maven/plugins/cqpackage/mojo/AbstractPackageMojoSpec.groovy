@@ -11,7 +11,6 @@ abstract class AbstractPackageMojoSpec extends Specification {
         mojo.password = "admin"
         mojo.retryDelay = 1000
         mojo.retryLimit = 5
-        mojo.force = true
         mojo.log = new TestLog()
     }
 }

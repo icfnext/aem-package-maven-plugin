@@ -4,11 +4,11 @@ import com.citytechinc.maven.plugins.cqpackage.enums.Command;
 import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
 import org.apache.maven.plugin.logging.Log;
 
+import java.util.Map;
+
 public interface PackageMojo {
 
     Command getCommand();
-
-    String getFileName();
 
     String getHost();
 
@@ -22,13 +22,13 @@ public interface PackageMojo {
 
     ResponseFormat getResponseFormat();
 
+    Map<String, String> getParameters();
+
     int getRetryDelay();
 
     int getRetryLimit();
 
     String getUsername();
-
-    boolean isForce();
 
     boolean isQuiet();
 }
