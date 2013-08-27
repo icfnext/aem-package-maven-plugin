@@ -1,4 +1,6 @@
 package com.citytechinc.maven.plugins.cqpackage.http
+
+import com.citytechinc.maven.plugins.cqpackage.enums.Command
 import com.citytechinc.maven.plugins.cqpackage.mojo.PackageMojo
 import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -15,7 +17,9 @@ import org.apache.http.impl.auth.BasicScheme
 import org.apache.http.impl.client.BasicAuthCache
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.params.BasicHttpParams
 import org.apache.http.protocol.BasicHttpContext
+import org.apache.maven.plugin.MojoExecutionException
 
 import static org.apache.http.client.protocol.ClientContext.AUTH_CACHE
 
@@ -49,12 +53,7 @@ class PackageManagerHttpClient {
         def host = new HttpHost(mojo.host, mojo.port)
 
         def context = buildContext(host)
-
-        def packageManagerUrl = "/crx/packmgr/service/${mojo.responseFormat.extension}/"
-
-        println "package manager url = $packageManagerUrl"
-
-        def method = buildPostMethod(packageManagerUrl)
+        def method = buildMethod()
 
         def response = null
 
@@ -73,7 +72,7 @@ class PackageManagerHttpClient {
                 retryCount++
             }
         } finally {
-            println "shutting down"
+            mojo.log.debug "Shutting down HTTP client."
 
             httpClient.connectionManager.shutdown()
         }
@@ -81,18 +80,39 @@ class PackageManagerHttpClient {
         response
     }
 
-    def buildPostMethod(packageManagerUrl) {
-        def method = new HttpPost(packageManagerUrl)
+    def buildMethod() {
+        def url = buildUrl()
 
-        def requestEntity = new MultipartEntity()
+        def method = new HttpPost(url)
 
-        requestEntity.addPart("cmd", new StringBody(mojo.command))
-        requestEntity.addPart("package", new FileBody(packageFile))
-        requestEntity.addPart("force", new StringBody("${mojo.force}"))
+        method.setParams(new BasicHttpParams().setParameter("cmd", mojo.command.parameter))
 
-        method.setEntity(requestEntity)
+        if (mojo.command == Command.UPLOAD) {
+            def requestEntity = new MultipartEntity()
+
+            requestEntity.addPart("package", new FileBody(packageFile))
+            requestEntity.addPart("force", new StringBody("${mojo.force}"))
+
+            method.setEntity(requestEntity)
+        }
 
         method
+    }
+
+    def buildUrl() {
+        def path = mojo.path
+
+        mojo.log.debug "package path = $path"
+
+        if (!path) {
+            throw new MojoExecutionException("Package has not been uploaded.")
+        }
+
+        def url = "/crx/packmgr/service/${mojo.responseFormat.extension}$path"
+
+        mojo.log.debug "Package Manager URL = $url"
+
+        url
     }
 
     def buildContext(host) {
@@ -120,9 +140,13 @@ class PackageManagerHttpClient {
 
             mojo.log.debug "Parsed response = $packageManagerResponse"
         } catch (HttpResponseException e) {
-            mojo.log.info("Error getting response from Package Manager, status code = ${e.statusCode}")
+            if (!mojo.quiet) {
+                mojo.log.info("Error getting response from Package Manager, status code = ${e.statusCode}")
+            }
         } catch (JsonProcessingException e) {
-            mojo.log.info("Error processing Package Manager response as JSON");
+            if (!mojo.quiet) {
+                mojo.log.info("Error processing Package Manager response as JSON");
+            }
         }
 
         packageManagerResponse

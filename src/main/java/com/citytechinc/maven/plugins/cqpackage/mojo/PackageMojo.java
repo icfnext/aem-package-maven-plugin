@@ -1,11 +1,12 @@
 package com.citytechinc.maven.plugins.cqpackage.mojo;
 
+import com.citytechinc.maven.plugins.cqpackage.enums.Command;
 import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
 import org.apache.maven.plugin.logging.Log;
 
 public interface PackageMojo {
 
-    String getCommand();
+    Command getCommand();
 
     String getFileName();
 
@@ -14,6 +15,8 @@ public interface PackageMojo {
     Log getLog();
 
     String getPassword();
+
+    String getPath();
 
     int getPort();
 

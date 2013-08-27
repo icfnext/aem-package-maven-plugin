@@ -1,5 +1,6 @@
 package com.citytechinc.maven.plugins.cqpackage.mojo;
 
+import com.citytechinc.maven.plugins.cqpackage.enums.Command;
 import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
 import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
 import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
@@ -11,7 +12,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo(name = "upload", defaultPhase = LifecyclePhase.INSTALL)
 public final class UploadPackageMojo extends AbstractPackageMojo {
 
-    private static final String COMMAND = "upload";
+    private static final String PATH = "/";
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -20,21 +21,28 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
         } else {
             final PackageManagerResponse response = new PackageManagerHttpClient(this).getResponse();
 
-            if (response.isSuccess()) {
-
-
-                final String packagePath = response.getPath();
-
-                session.getUserProperties().put(PROPERTY_PACKAGE_PATH, packagePath);
+            if (response == null) {
+                throw new MojoExecutionException("Error uploading package.");
             } else {
+                if (response.isSuccess()) {
+                    getLog().info(response.getMessage());
 
+                    session.getUserProperties().put(PROPERTY_PACKAGE_PATH, response.getPath());
+                } else {
+                    throw new MojoExecutionException(response.getMessage());
+                }
             }
         }
     }
 
     @Override
-    public String getCommand() {
-        return COMMAND;
+    public Command getCommand() {
+        return Command.UPLOAD;
+    }
+
+    @Override
+    public String getPath() {
+        return PATH;
     }
 
     @Override
