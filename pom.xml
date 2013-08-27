@@ -39,6 +39,18 @@
         <tag>HEAD</tag>
     </scm>
 
+    <distributionManagement>
+        <repository>
+            <id>citytech-public-releases</id>
+            <url>http://nexus.citytech.ctmsp.com/content/repositories/public-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>citytech-public-snapshots</id>
+            <url>http://nexus.citytech.ctmsp.com/content/repositories/public-snapshots</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
