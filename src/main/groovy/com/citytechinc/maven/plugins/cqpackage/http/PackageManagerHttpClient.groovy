@@ -1,4 +1,5 @@
 package com.citytechinc.maven.plugins.cqpackage.http
+
 import com.citytechinc.maven.plugins.cqpackage.mojo.PackageMojo
 import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -75,8 +76,6 @@ class PackageManagerHttpClient {
                 retryCount++
             }
         } finally {
-            mojo.log.debug "Shutting down HTTP client."
-
             httpClient.connectionManager.shutdown()
         }
 
@@ -84,8 +83,6 @@ class PackageManagerHttpClient {
     }
 
     private def buildUrl(path) {
-        mojo.log.debug "package path = $path"
-
         if (!path) {
             throw new MojoExecutionException("Package has not been uploaded.")
         }
@@ -136,11 +133,9 @@ class PackageManagerHttpClient {
         try {
             def responseBody = httpClient.execute(host, method, new BasicResponseHandler(), context)
 
-            mojo.log.debug "Package Manager response = $responseBody"
+            mojo.log.info "Package Manager response = $responseBody"
 
             packageManagerResponse = MAPPER.readValue(responseBody, PackageManagerResponse)
-
-            mojo.log.debug "Parsed response = $packageManagerResponse"
         } catch (HttpResponseException e) {
             if (!mojo.quiet) {
                 mojo.log.info("Error getting response from Package Manager, status code = ${e.statusCode}")

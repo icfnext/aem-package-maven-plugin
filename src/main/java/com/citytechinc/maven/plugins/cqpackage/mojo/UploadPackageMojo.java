@@ -46,9 +46,4 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
 
         return httpClient.getResponse(packageFile);
     }
-
-    @Override
-    public void handleSuccess(final PackageManagerResponse response) {
-        session.getUserProperties().put(PROPERTY_PACKAGE_PATH, response.getPath());
-    }
 }

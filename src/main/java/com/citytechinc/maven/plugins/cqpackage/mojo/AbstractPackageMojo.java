@@ -85,7 +85,11 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
                 if (response.isSuccess()) {
                     getLog().info(response.getMessage());
 
-                    handleSuccess(response);
+                    final String path = response.getPath();
+
+                    if (path != null) {
+                        session.getUserProperties().put(PROPERTY_PACKAGE_PATH, path);
+                    }
                 } else {
                     throw new MojoExecutionException(response.getMessage());
                 }
@@ -129,6 +133,4 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);
-
-    public abstract void handleSuccess(final PackageManagerResponse response);
 }

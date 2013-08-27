@@ -36,9 +36,4 @@ public final class InstallPackageMojo extends AbstractPackageMojo {
 
         return httpClient.getResponse(path);
     }
-
-    @Override
-    public void handleSuccess(final PackageManagerResponse response) {
-
-    }
 }

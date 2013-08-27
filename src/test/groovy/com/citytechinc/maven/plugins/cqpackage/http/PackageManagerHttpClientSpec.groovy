@@ -4,10 +4,12 @@ import com.citytechinc.maven.plugins.cqpackage.log.TestLog
 import com.citytechinc.maven.plugins.cqpackage.mojo.AbstractPackageMojo
 import com.citytechinc.maven.plugins.cqpackage.mojo.InstallPackageMojo
 import com.citytechinc.maven.plugins.cqpackage.mojo.UploadPackageMojo
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Stepwise
 
 @Stepwise
+@Ignore
 class PackageManagerHttpClientSpec extends Specification {
 
     def "upload package"() {
@@ -32,7 +34,7 @@ class PackageManagerHttpClientSpec extends Specification {
         setCommonProperties(mojo)
 
         def httpClient = new PackageManagerHttpClient(mojo)
-        def path = "/etc/packages/my_packages/invalid.zip"
+        def path = "/etc/packages/my_packages/valid.zip"
 
         expect:
         httpClient.getResponse(path)
@@ -49,7 +51,7 @@ class PackageManagerHttpClientSpec extends Specification {
     }
 
     def getPackageFile() {
-        def url = this.class.getResource("/invalid.zip")
+        def url = this.class.getResource("/valid.zip")
 
         new File(url.toURI())
     }
