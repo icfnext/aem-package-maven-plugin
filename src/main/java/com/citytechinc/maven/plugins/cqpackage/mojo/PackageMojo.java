@@ -16,8 +16,6 @@ public interface PackageMojo {
 
     String getPassword();
 
-    String getPath();
-
     int getPort();
 
     ResponseFormat getResponseFormat();

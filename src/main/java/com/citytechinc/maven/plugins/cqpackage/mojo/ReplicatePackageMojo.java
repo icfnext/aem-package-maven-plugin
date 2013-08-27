@@ -21,11 +21,6 @@ public final class ReplicatePackageMojo extends AbstractPackageMojo {
     }
 
     @Override
-    public String getPath() {
-        return (String) session.getUserProperties().get(PROPERTY_PACKAGE_PATH);
-    }
-
-    @Override
     public ResponseFormat getResponseFormat() {
         return ResponseFormat.JSON;
     }
@@ -37,7 +32,9 @@ public final class ReplicatePackageMojo extends AbstractPackageMojo {
 
     @Override
     public PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient) {
-        return httpClient.getResponse();
+        final String path = (String) session.getUserProperties().get(PROPERTY_PACKAGE_PATH);
+
+        return httpClient.getResponse(path);
     }
 
     @Override

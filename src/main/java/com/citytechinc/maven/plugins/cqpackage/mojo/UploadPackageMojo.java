@@ -15,8 +15,6 @@ import java.util.Map;
 @Mojo(name = "upload", defaultPhase = LifecyclePhase.INSTALL)
 public final class UploadPackageMojo extends AbstractPackageMojo {
 
-    private static final String PATH = "/";
-
     /**
      * Force upload of CQ package even if it already exists.
      */
@@ -26,11 +24,6 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
     @Override
     public Command getCommand() {
         return Command.UPLOAD;
-    }
-
-    @Override
-    public String getPath() {
-        return PATH;
     }
 
     @Override

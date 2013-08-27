@@ -30,11 +30,21 @@ class PackageManagerHttpClient {
         this.mojo = mojo
     }
 
-    PackageManagerResponse getResponse() {
-        getResponse(null)
+    PackageManagerResponse getResponse(String path) {
+        def url = buildUrl(path)
+        def method = buildMethod(url, null)
+
+        getResponseInternal(method)
     }
 
     PackageManagerResponse getResponse(File packageFile) {
+        def url = buildUrl("/")
+        def method = buildMethod(url, packageFile)
+
+        getResponseInternal(method)
+    }
+
+    private def getResponseInternal(method) {
         def retryLimit = mojo.retryLimit
         def retryDelay = mojo.retryDelay
         def retryCount = 0
@@ -47,7 +57,6 @@ class PackageManagerHttpClient {
         def host = new HttpHost(mojo.host, mojo.port)
 
         def context = buildContext(host)
-        def method = buildMethod(packageFile)
 
         def response = null
 
@@ -74,9 +83,21 @@ class PackageManagerHttpClient {
         response
     }
 
-    def buildMethod(File packageFile) {
-        def url = buildUrl()
+    private def buildUrl(path) {
+        mojo.log.debug "package path = $path"
 
+        if (!path) {
+            throw new MojoExecutionException("Package has not been uploaded.")
+        }
+
+        def url = "/crx/packmgr/service/${mojo.responseFormat.extension}$path"
+
+        mojo.log.debug "package manager URL = $url"
+
+        url
+    }
+
+    private def buildMethod(String url, File packageFile) {
         def method = new HttpPost(url)
 
         def requestEntity = new MultipartEntity()
@@ -96,23 +117,7 @@ class PackageManagerHttpClient {
         method
     }
 
-    def buildUrl() {
-        def path = mojo.path
-
-        mojo.log.debug "package path = $path"
-
-        if (!path) {
-            throw new MojoExecutionException("Package has not been uploaded.")
-        }
-
-        def url = "/crx/packmgr/service/${mojo.responseFormat.extension}$path"
-
-        mojo.log.debug "Package Manager URL = $url"
-
-        url
-    }
-
-    def buildContext(host) {
+    private def buildContext(host) {
         def context = new BasicHttpContext()
 
         def cache = new BasicAuthCache()
@@ -125,7 +130,7 @@ class PackageManagerHttpClient {
         context
     }
 
-    def executeRequest(httpClient, host, method, context) {
+    private def executeRequest(httpClient, host, method, context) {
         def packageManagerResponse = null
 
         try {
