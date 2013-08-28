@@ -1,7 +1,11 @@
 package com.citytechinc.maven.plugins.cqpackage.mojo;
 
+import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
+import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -10,22 +14,17 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     protected static final String PROPERTY_PACKAGE_PATH = "cq.package.path";
 
     /**
+     * CQ package name.
+     */
+    @Parameter(property = "cq.package.fileName",
+        defaultValue = "${project.build.directory}/${project.build.finalName}.zip")
+    protected String fileName;
+
+    /**
      * CQ host name.
      */
     @Parameter(defaultValue = "localhost")
     protected String host;
-
-    /**
-     * CQ port number.
-     */
-    @Parameter(defaultValue = "4502")
-    protected Integer port;
-
-    /**
-     * CQ user name.
-     */
-    @Parameter(defaultValue = "admin")
-    protected String username;
 
     /**
      * CQ password.
@@ -34,16 +33,16 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     protected String password;
 
     /**
-     * Force upload of CQ package even if it already exists.
+     * CQ port number.
      */
-    @Parameter(property = "cq.package.force", defaultValue = "true")
-    protected boolean force;
+    @Parameter(defaultValue = "4502")
+    protected Integer port;
 
     /**
-     * CQ package name.
+     * Quiet logging when executing package command.
      */
-    @Parameter(property = "cq.package.fileName", defaultValue = "${project.build.directory}/${project.build.finalName}.zip")
-    protected String fileName;
+    @Parameter(property = "cq.package.quiet", defaultValue = "false")
+    protected boolean quiet;
 
     /**
      * Delay in milliseconds before retrying package command.
@@ -57,6 +56,9 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     @Parameter(defaultValue = "5")
     protected Integer retryLimit;
 
+    @Component
+    protected MavenSession session;
+
     /**
      * Skip execution of the plugin.
      */
@@ -64,17 +66,35 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     protected boolean skip;
 
     /**
-     * Quiet logging when executing package command.
+     * CQ user name.
      */
-    @Parameter(property = "cq.package.quiet", defaultValue = "false")
-    protected boolean quiet;
-
-    @Component
-    protected MavenSession session;
+    @Parameter(defaultValue = "admin")
+    protected String username;
 
     @Override
-    public String getFileName() {
-        return fileName;
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        if (skip) {
+            getLog().info("Skipping execution per configuration.");
+        } else {
+            final PackageManagerHttpClient httpClient = new PackageManagerHttpClient(this);
+            final PackageManagerResponse response = getResponse(httpClient);
+
+            if (response == null) {
+                throw new MojoExecutionException("Error executing package command.");
+            } else {
+                if (response.isSuccess()) {
+                    getLog().info(response.getMessage());
+
+                    final String path = response.getPath();
+
+                    if (path != null) {
+                        session.getUserProperties().put(PROPERTY_PACKAGE_PATH, path);
+                    }
+                } else {
+                    throw new MojoExecutionException(response.getMessage());
+                }
+            }
+        }
     }
 
     @Override
@@ -108,7 +128,9 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
-    public boolean isForce() {
-        return force;
+    public boolean isQuiet() {
+        return quiet;
     }
+
+    public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);
 }

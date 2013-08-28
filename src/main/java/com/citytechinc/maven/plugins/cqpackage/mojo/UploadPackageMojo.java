@@ -1,42 +1,49 @@
 package com.citytechinc.maven.plugins.cqpackage.mojo;
 
+import com.citytechinc.maven.plugins.cqpackage.enums.Command;
 import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
 import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
 import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import com.google.common.collect.Maps;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+
+import java.io.File;
+import java.util.Map;
 
 @Mojo(name = "upload", defaultPhase = LifecyclePhase.INSTALL)
 public final class UploadPackageMojo extends AbstractPackageMojo {
 
-    private static final String COMMAND = "upload";
+    /**
+     * Force upload of CQ package even if it already exists.
+     */
+    @Parameter(property = "cq.package.force", defaultValue = "true")
+    protected boolean force;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        if (skip) {
-            getLog().info("Skipping execution per configuration.");
-        } else {
-            final PackageManagerResponse response = new PackageManagerHttpClient(this).getResponse();
-
-            if (response.isSuccess()) {
-                final String packagePath = response.getPath();
-
-                session.getUserProperties().put(PROPERTY_PACKAGE_PATH, packagePath);
-            } else {
-
-            }
-        }
-    }
-
-    @Override
-    public String getCommand() {
-        return COMMAND;
+    public Command getCommand() {
+        return Command.UPLOAD;
     }
 
     @Override
     public ResponseFormat getResponseFormat() {
         return ResponseFormat.JSON;
+    }
+
+    @Override
+    public Map<String, String> getParameters() {
+        final Map<String, String> parameters = Maps.newHashMap();
+
+        parameters.put("force", Boolean.toString(force));
+
+        return parameters;
+    }
+
+    @Override
+    public PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient) {
+        final File packageFile = new File(fileName);
+
+        return httpClient.getResponse(packageFile);
     }
 }
