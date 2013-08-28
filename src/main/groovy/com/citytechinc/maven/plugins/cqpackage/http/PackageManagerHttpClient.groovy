@@ -89,7 +89,7 @@ class PackageManagerHttpClient {
 
         def url = "/crx/packmgr/service/${mojo.responseFormat.extension}$path"
 
-        mojo.log.debug "package manager URL = $url"
+        mojo.log.debug "Package Manager URL = $url"
 
         url
     }
@@ -133,7 +133,7 @@ class PackageManagerHttpClient {
         try {
             def responseBody = httpClient.execute(host, method, new BasicResponseHandler(), context)
 
-            mojo.log.info "Package Manager response = $responseBody"
+            mojo.log.debug "Package Manager response = $responseBody"
 
             packageManagerResponse = MAPPER.readValue(responseBody, PackageManagerResponse)
         } catch (HttpResponseException e) {
