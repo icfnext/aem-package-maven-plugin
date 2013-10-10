@@ -29,4 +29,6 @@ public interface PackageMojo {
     String getUsername();
 
     boolean isQuiet();
+
+    boolean isSecure();
 }
