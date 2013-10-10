@@ -55,7 +55,7 @@ class PackageManagerHttpClient {
         httpClient.credentialsProvider.setCredentials(new AuthScope(mojo.host, mojo.port),
             new UsernamePasswordCredentials(mojo.username, mojo.password))
 
-        def host = new HttpHost(mojo.host, mojo.port)
+        def host = new HttpHost(mojo.host, mojo.port, mojo.secure ? "https" : "http")
 
         def context = buildContext(host)
 

@@ -39,6 +39,12 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     protected Integer port;
 
     /**
+     * Connect to Package Manager using https scheme.
+     */
+    @Parameter(defaultValue = "false")
+    protected boolean secure;
+
+    /**
      * Quiet logging when executing package command.
      */
     @Parameter(property = "cq.package.quiet", defaultValue = "false")
@@ -130,6 +136,11 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     @Override
     public boolean isQuiet() {
         return quiet;
+    }
+
+    @Override
+    public boolean isSecure() {
+        return secure;
     }
 
     public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);

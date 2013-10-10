@@ -10,7 +10,7 @@ public enum ResponseFormat {
         this.extension = extension;
     }
 
-    private String getExtension() {
+    public String getExtension() {
         return extension;
     }
 }
