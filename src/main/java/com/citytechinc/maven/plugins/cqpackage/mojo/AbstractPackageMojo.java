@@ -39,6 +39,12 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     protected Integer port;
 
     /**
+     * CQ context path.
+     */
+    @Parameter(defaultValue = "")
+    protected String contextPath;
+
+    /**
      * Connect to Package Manager using https scheme.
      */
     @Parameter(defaultValue = "false")
@@ -101,6 +107,11 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
                 }
             }
         }
+    }
+
+    @Override
+    public String getContextPath() {
+        return contextPath;
     }
 
     @Override
