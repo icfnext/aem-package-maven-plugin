@@ -87,7 +87,7 @@ class PackageManagerHttpClient {
             throw new MojoExecutionException("Package has not been uploaded.")
         }
 
-        def url = "${mojo.contextPath}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
+        def url = "${mojo.contextPath ?: ''}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
 
         mojo.log.debug "Package Manager URL = $url"
 
