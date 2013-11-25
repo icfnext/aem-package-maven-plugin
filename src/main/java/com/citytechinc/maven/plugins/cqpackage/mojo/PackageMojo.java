@@ -10,6 +10,8 @@ public interface PackageMojo {
 
     Command getCommand();
 
+    String getContextPath();
+
     String getHost();
 
     Log getLog();
