@@ -28,9 +28,9 @@ public interface PackageMojo {
 
     int getRetryLimit();
 
+    String getScheme();
+
     String getUsername();
 
     boolean isQuiet();
-
-    boolean isSecure();
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.apache.http.HttpHost
 import org.apache.http.auth.AuthScope
 import org.apache.http.auth.UsernamePasswordCredentials
+import org.apache.http.client.HttpClient
 import org.apache.http.client.HttpResponseException
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.mime.MultipartEntity
@@ -17,6 +18,7 @@ import org.apache.http.impl.client.BasicAuthCache
 import org.apache.http.impl.client.BasicResponseHandler
 import org.apache.http.impl.client.DefaultHttpClient
 import org.apache.http.protocol.BasicHttpContext
+import org.apache.http.protocol.HttpContext
 import org.apache.maven.plugin.MojoExecutionException
 
 import static org.apache.http.client.protocol.ClientContext.AUTH_CACHE
@@ -45,7 +47,7 @@ class PackageManagerHttpClient {
         getResponseInternal(method)
     }
 
-    private def getResponseInternal(method) {
+    private def getResponseInternal(HttpPost method) {
         def retryLimit = mojo.retryLimit
         def retryDelay = mojo.retryDelay
         def retryCount = 0
@@ -55,7 +57,7 @@ class PackageManagerHttpClient {
         httpClient.credentialsProvider.setCredentials(new AuthScope(mojo.host, mojo.port),
             new UsernamePasswordCredentials(mojo.username, mojo.password))
 
-        def host = new HttpHost(mojo.host, mojo.port, mojo.secure ? "https" : "http")
+        def host = new HttpHost(mojo.host, mojo.port, mojo.scheme)
 
         def context = buildContext(host)
 
@@ -87,7 +89,7 @@ class PackageManagerHttpClient {
             throw new MojoExecutionException("Package has not been uploaded.")
         }
 
-        def url = "${mojo.contextPath ?: ''}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
+        def url = "${mojo.contextPath}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
 
         mojo.log.debug "Package Manager URL = $url"
 
@@ -114,20 +116,7 @@ class PackageManagerHttpClient {
         method
     }
 
-    private def buildContext(host) {
-        def context = new BasicHttpContext()
-
-        def cache = new BasicAuthCache()
-        def scheme = new BasicScheme()
-
-        cache.put(host, scheme)
-
-        context.setAttribute(AUTH_CACHE, cache)
-
-        context
-    }
-
-    private def executeRequest(httpClient, host, method, context) {
+    private def executeRequest(HttpClient httpClient, HttpHost host, HttpPost method, HttpContext context) {
         def packageManagerResponse = null
 
         try {
@@ -147,5 +136,18 @@ class PackageManagerHttpClient {
         }
 
         packageManagerResponse
+    }
+
+    private static def buildContext(HttpHost host) {
+        def context = new BasicHttpContext()
+
+        def cache = new BasicAuthCache()
+        def scheme = new BasicScheme()
+
+        cache.put(host, scheme)
+
+        context.setAttribute(AUTH_CACHE, cache)
+
+        context
     }
 }

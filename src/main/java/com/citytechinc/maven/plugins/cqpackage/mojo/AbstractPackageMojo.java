@@ -88,8 +88,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
         if (skip) {
             getLog().info("Skipping execution per configuration.");
         } else {
-            final PackageManagerHttpClient httpClient = new PackageManagerHttpClient(this);
-            final PackageManagerResponse response = getResponse(httpClient);
+            final PackageManagerResponse response = getResponse(new PackageManagerHttpClient(this));
 
             if (response == null) {
                 throw new MojoExecutionException("Error executing package command.");
@@ -111,7 +110,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
 
     @Override
     public String getContextPath() {
-        return contextPath;
+        return contextPath == null ? "" : contextPath;
     }
 
     @Override
@@ -140,6 +139,11 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
+    public String getScheme() {
+        return secure ? "https" : "http";
+    }
+
+    @Override
     public String getUsername() {
         return username;
     }
@@ -147,11 +151,6 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     @Override
     public boolean isQuiet() {
         return quiet;
-    }
-
-    @Override
-    public boolean isSecure() {
-        return secure;
     }
 
     public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);
