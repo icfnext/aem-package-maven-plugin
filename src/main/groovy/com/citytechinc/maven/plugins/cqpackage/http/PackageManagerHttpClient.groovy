@@ -2,89 +2,50 @@ package com.citytechinc.maven.plugins.cqpackage.http
 
 import com.citytechinc.maven.plugins.cqpackage.mojo.PackageMojo
 import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse
-import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.apache.http.HttpHost
-import org.apache.http.auth.AuthScope
-import org.apache.http.auth.UsernamePasswordCredentials
-import org.apache.http.client.HttpClient
-import org.apache.http.client.HttpResponseException
-import org.apache.http.client.methods.HttpPost
-import org.apache.http.entity.mime.MultipartEntity
-import org.apache.http.entity.mime.content.FileBody
-import org.apache.http.entity.mime.content.StringBody
-import org.apache.http.impl.auth.BasicScheme
-import org.apache.http.impl.client.BasicAuthCache
-import org.apache.http.impl.client.BasicResponseHandler
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.protocol.BasicHttpContext
-import org.apache.http.protocol.HttpContext
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
+import com.sun.jersey.api.client.Client
+import com.sun.jersey.api.client.ClientHandlerException
+import com.sun.jersey.api.client.UniformInterfaceException
+import com.sun.jersey.api.client.WebResource
+import com.sun.jersey.api.client.config.DefaultClientConfig
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter
+import com.sun.jersey.multipart.FormDataMultiPart
+import com.sun.jersey.multipart.MultiPart
+import com.sun.jersey.multipart.file.FileDataBodyPart
 import org.apache.maven.plugin.MojoExecutionException
 
-import static org.apache.http.client.protocol.ClientContext.AUTH_CACHE
+import javax.ws.rs.core.MediaType
 
 class PackageManagerHttpClient {
 
-    static final def MAPPER = new ObjectMapper()
+    private static final ObjectMapper MAPPER = new ObjectMapper()
 
-    PackageMojo mojo
+    private final PackageMojo mojo
+
+    private final WebResource resource
 
     PackageManagerHttpClient(PackageMojo mojo) {
         this.mojo = mojo
+
+        resource = client.resource("${mojo.scheme}://${mojo.host}:${mojo.port}")
     }
 
     PackageManagerResponse getResponse(String path) {
         def url = buildUrl(path)
-        def method = buildMethod(url, null)
+        def entity = buildRequestEntity(null)
 
-        getResponseInternal(method)
+        getResponseInternal(url, entity)
     }
 
     PackageManagerResponse getResponse(File packageFile) {
         def url = buildUrl("/")
-        def method = buildMethod(url, packageFile)
+        def entity = buildRequestEntity(packageFile)
 
-        getResponseInternal(method)
+        getResponseInternal(url, entity)
     }
 
-    private def getResponseInternal(HttpPost method) {
-        def retryLimit = mojo.retryLimit
-        def retryDelay = mojo.retryDelay
-        def retryCount = 0
-
-        def httpClient = new DefaultHttpClient()
-
-        httpClient.credentialsProvider.setCredentials(new AuthScope(mojo.host, mojo.port),
-            new UsernamePasswordCredentials(mojo.username, mojo.password))
-
-        def host = new HttpHost(mojo.host, mojo.port, mojo.scheme)
-
-        def context = buildContext(host)
-
-        def response = null
-
-        try {
-            response = executeRequest(httpClient, host, method, context)
-
-            while (!response && retryCount < retryLimit) {
-                if (!mojo.quiet) {
-                    mojo.log.info "Error getting response from Package Manager, retrying..."
-                }
-
-                Thread.sleep(retryDelay)
-
-                response = executeRequest(httpClient, host, method, context)
-
-                retryCount++
-            }
-        } finally {
-            httpClient.connectionManager.shutdown()
-        }
-
-        response
-    }
-
-    private def buildUrl(path) {
+    private String buildUrl(path) {
         if (!path) {
             throw new MojoExecutionException("Package has not been uploaded.")
         }
@@ -96,58 +57,77 @@ class PackageManagerHttpClient {
         url
     }
 
-    private def buildMethod(String url, File packageFile) {
-        def method = new HttpPost(url)
+    private PackageManagerResponse getResponseInternal(String url, MultiPart entity) {
+        def retryLimit = mojo.retryLimit
+        def retryDelay = mojo.retryDelay
+        def retryCount = 0
 
-        def requestEntity = new MultipartEntity()
+        def response = executeRequest(url, entity)
 
-        requestEntity.addPart("cmd", new StringBody(mojo.command.parameter))
+        while (!response && retryCount < retryLimit) {
+            if (!mojo.quiet) {
+                mojo.log.info "Error getting response from Package Manager, retrying..."
+            }
+
+            Thread.sleep(retryDelay)
+
+            response = executeRequest(url, entity)
+
+            retryCount++
+        }
+
+        response
+    }
+
+    private MultiPart buildRequestEntity(File packageFile) {
+        def multiPart = new FormDataMultiPart()
+
+        multiPart.field("cmd", mojo.command.parameter)
 
         mojo.parameters.each { name, value ->
-            requestEntity.addPart(name, new StringBody(value))
+            multiPart.field(name, value)
         }
 
         if (packageFile) {
-            requestEntity.addPart("package", new FileBody(packageFile))
+            multiPart.bodyPart(new FileDataBodyPart("package", packageFile))
         }
 
-        method.setEntity(requestEntity)
-
-        method
+        multiPart
     }
 
-    private def executeRequest(HttpClient httpClient, HttpHost host, HttpPost method, HttpContext context) {
+    private PackageManagerResponse executeRequest(String url, MultiPart entity) {
         def packageManagerResponse = null
 
         try {
-            def responseBody = httpClient.execute(host, method, new BasicResponseHandler(), context)
+            packageManagerResponse = resource.path(url)
+                .type(MediaType.MULTIPART_FORM_DATA_TYPE)
+                .post(PackageManagerResponse, entity)
 
-            mojo.log.debug "Package Manager response = $responseBody"
-
-            packageManagerResponse = MAPPER.readValue(responseBody, PackageManagerResponse)
-        } catch (HttpResponseException e) {
+            mojo.log.debug("Package Manager response = $packageManagerResponse")
+        } catch (UniformInterfaceException e) {
             if (!mojo.quiet) {
-                mojo.log.info("Error getting response from Package Manager, status code = ${e.statusCode}")
+                mojo.log.info("Error getting response from Package Manager, status code = ${e.response.status}")
             }
-        } catch (JsonProcessingException e) {
+        } catch (ClientHandlerException e) {
             if (!mojo.quiet) {
-                mojo.log.info("Error processing Package Manager response as JSON");
+                mojo.log.info("Error processing Package Manager response as JSON")
             }
         }
 
         packageManagerResponse
     }
 
-    private static def buildContext(HttpHost host) {
-        def context = new BasicHttpContext()
+    private Client getClient() {
+        def clientConfig = new DefaultClientConfig()
 
-        def cache = new BasicAuthCache()
-        def scheme = new BasicScheme()
+        clientConfig.singletons.add(new JacksonJsonProvider(MAPPER))
 
-        cache.put(host, scheme)
+        def client = Client.create(clientConfig)
 
-        context.setAttribute(AUTH_CACHE, cache)
+        client.addFilter(new HTTPBasicAuthFilter(mojo.username, mojo.password))
+        client.connectTimeout = mojo.connectTimeout
+        client.readTimeout = mojo.readTimeout
 
-        context
+        client
     }
 }

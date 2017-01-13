@@ -7,7 +7,7 @@ public enum Command {
 
     private final String parameter;
 
-    private Command(final String parameter) {
+    Command(final String parameter) {
         this.parameter = parameter;
     }
 

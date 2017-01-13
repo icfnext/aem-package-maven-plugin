@@ -41,7 +41,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     /**
      * CQ context path.
      */
-    @Parameter(defaultValue = "")
+    @Parameter
     protected String contextPath;
 
     /**
@@ -68,6 +68,18 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     @Parameter(defaultValue = "5")
     protected Integer retryLimit;
 
+    /**
+     * Read timeout in milliseconds.
+     */
+    @Parameter(defaultValue = "30000")
+    protected Integer readTimeout;
+
+    /**
+     * Connection timeout in milliseconds.
+     */
+    @Parameter(defaultValue = "30000")
+    protected Integer connectTimeout;
+
     @Component
     protected MavenSession session;
 
@@ -75,7 +87,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
      * Skip execution of the plugin.
      */
     @Parameter(property = "cq.package.skip", defaultValue = "false")
-    protected boolean skip;
+    protected Boolean skip;
 
     /**
      * CQ user name.
@@ -124,18 +136,28 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
     @Override
-    public int getRetryDelay() {
+    public Integer getRetryDelay() {
         return retryDelay;
     }
 
     @Override
-    public int getRetryLimit() {
+    public Integer getRetryLimit() {
         return retryLimit;
+    }
+
+    @Override
+    public Integer getReadTimeout() {
+        return readTimeout;
+    }
+
+    @Override
+    public Integer getConnectTimeout() {
+        return connectTimeout;
     }
 
     @Override
@@ -149,7 +171,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
-    public boolean isQuiet() {
+    public Boolean isQuiet() {
         return quiet;
     }
 

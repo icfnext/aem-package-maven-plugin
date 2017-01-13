@@ -1,9 +1,8 @@
 package com.citytechinc.maven.plugins.cqpackage.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import groovy.transform.ToString
+import groovy.json.JsonBuilder
 
-@ToString(includeNames = true)
 class PackageManagerResponse {
 
     @JsonProperty("msg")
@@ -12,4 +11,9 @@ class PackageManagerResponse {
     String path
 
     boolean success
+
+    @Override
+    String toString() {
+        new JsonBuilder(this).toString()
+    }
 }

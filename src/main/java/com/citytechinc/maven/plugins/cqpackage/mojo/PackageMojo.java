@@ -18,19 +18,23 @@ public interface PackageMojo {
 
     String getPassword();
 
-    int getPort();
+    Integer getPort();
 
     ResponseFormat getResponseFormat();
 
     Map<String, String> getParameters();
 
-    int getRetryDelay();
+    Integer getRetryDelay();
 
-    int getRetryLimit();
+    Integer getRetryLimit();
+
+    Integer getConnectTimeout();
+
+    Integer getReadTimeout();
 
     String getScheme();
 
     String getUsername();
 
-    boolean isQuiet();
+    Boolean isQuiet();
 }

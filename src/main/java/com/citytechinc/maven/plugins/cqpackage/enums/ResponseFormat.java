@@ -6,7 +6,7 @@ public enum ResponseFormat {
 
     private String extension;
 
-    private ResponseFormat(final String extension) {
+    ResponseFormat(final String extension) {
         this.extension = extension;
     }
 
