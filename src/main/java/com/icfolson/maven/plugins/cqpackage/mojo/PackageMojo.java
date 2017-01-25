@@ -1,7 +1,7 @@
-package com.citytechinc.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.cqpackage.mojo;
 
-import com.citytechinc.maven.plugins.cqpackage.enums.Command;
-import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
+import com.icfolson.maven.plugins.cqpackage.enums.Command;
+import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
 import org.apache.maven.plugin.logging.Log;
 
 import java.util.Map;

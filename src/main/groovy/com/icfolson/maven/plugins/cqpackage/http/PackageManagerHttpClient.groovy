@@ -1,9 +1,9 @@
-package com.citytechinc.maven.plugins.cqpackage.http
+package com.icfolson.maven.plugins.cqpackage.http
 
-import com.citytechinc.maven.plugins.cqpackage.mojo.PackageMojo
-import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
+import com.icfolson.maven.plugins.cqpackage.mojo.PackageMojo
+import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientHandlerException
 import com.sun.jersey.api.client.UniformInterfaceException
@@ -52,7 +52,7 @@ class PackageManagerHttpClient {
 
         def url = "${mojo.contextPath}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
 
-        mojo.log.debug "Package Manager URL = $url"
+        mojo.log.debug("Package Manager URL = $url")
 
         url
     }
@@ -66,7 +66,7 @@ class PackageManagerHttpClient {
 
         while (!response && retryCount < retryLimit) {
             if (!mojo.quiet) {
-                mojo.log.info "Error getting response from Package Manager, retrying..."
+                mojo.log.info("Error getting response from Package Manager, retrying...")
             }
 
             Thread.sleep(retryDelay)
@@ -110,7 +110,7 @@ class PackageManagerHttpClient {
             }
         } catch (ClientHandlerException e) {
             if (!mojo.quiet) {
-                mojo.log.info("Error processing Package Manager response as JSON")
+                mojo.log.error("Error processing Package Manager response as JSON", e)
             }
         }
 

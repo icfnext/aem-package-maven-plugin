@@ -1,16 +1,16 @@
-package com.citytechinc.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.cqpackage.mojo;
 
 import java.util.Map;
 
+import com.icfolson.maven.plugins.cqpackage.enums.Command;
+import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
+import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import com.citytechinc.maven.plugins.cqpackage.enums.Command;
-import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
-import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
-import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
+import com.icfolson.maven.plugins.cqpackage.http.PackageManagerHttpClient;
 import com.google.common.collect.Maps;
 
 @Mojo(name = "install", defaultPhase = LifecyclePhase.INSTALL)

@@ -1,4 +1,4 @@
-package com.citytechinc.maven.plugins.cqpackage.enums;
+package com.icfolson.maven.plugins.cqpackage.enums;
 
 public enum Command {
     UPLOAD("upload"),

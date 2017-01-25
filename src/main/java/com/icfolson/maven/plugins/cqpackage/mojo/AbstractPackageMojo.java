@@ -1,7 +1,7 @@
-package com.citytechinc.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.cqpackage.mojo;
 
-import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
-import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
+import com.icfolson.maven.plugins.cqpackage.http.PackageManagerHttpClient;
+import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
