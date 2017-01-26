@@ -1,6 +1,5 @@
 package com.icfolson.maven.plugins.cqpackage.mojo;
 
-import com.icfolson.maven.plugins.cqpackage.enums.Command;
 import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
 import com.icfolson.maven.plugins.cqpackage.http.PackageManagerHttpClient;
 import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse;
@@ -16,11 +15,6 @@ import java.util.Map;
 public final class ReplicatePackageMojo extends AbstractPackageMojo {
 
     @Override
-    public Command getCommand() {
-        return Command.REPLICATE;
-    }
-
-    @Override
     public ResponseFormat getResponseFormat() {
         return ResponseFormat.JSON;
     }
@@ -31,9 +25,9 @@ public final class ReplicatePackageMojo extends AbstractPackageMojo {
     }
 
     @Override
-    public PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient) {
+    public PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient) {
         final String path = (String) session.getUserProperties().get(PROPERTY_PACKAGE_PATH);
 
-        return httpClient.getResponse(path);
+        return httpClient.replicatePackage(path);
     }
 }

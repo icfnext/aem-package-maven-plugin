@@ -2,6 +2,7 @@ package com.icfolson.maven.plugins.cqpackage.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
+import com.icfolson.maven.plugins.cqpackage.enums.Command
 import com.icfolson.maven.plugins.cqpackage.mojo.PackageMojo
 import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse
 import com.sun.jersey.api.client.Client
@@ -31,18 +32,19 @@ class PackageManagerHttpClient {
         resource = client.resource("${mojo.scheme}://${mojo.host}:${mojo.port}")
     }
 
-    PackageManagerResponse getResponse(String path) {
-        def url = buildUrl(path)
-        def entity = buildRequestEntity(null)
-
-        getResponseInternal(url, entity)
+    PackageManagerResponse installPackage(String path) {
+        executeCommand(Command.INSTALL, path)
     }
 
-    PackageManagerResponse getResponse(File packageFile) {
-        def url = buildUrl("/")
-        def entity = buildRequestEntity(packageFile)
+    PackageManagerResponse replicatePackage(String path) {
+        executeCommand(Command.REPLICATE, path)
+    }
 
-        getResponseInternal(url, entity)
+    PackageManagerResponse uploadPackage(File packageFile) {
+        def url = buildUrl("/")
+        def entity = buildRequestEntity(Command.UPLOAD, packageFile)
+
+        getPackageManagerResponse(url, entity)
     }
 
     private String buildUrl(path) {
@@ -52,12 +54,19 @@ class PackageManagerHttpClient {
 
         def url = "${mojo.contextPath}/crx/packmgr/service/${mojo.responseFormat.extension}$path"
 
-        mojo.log.debug("Package Manager URL = $url")
+        mojo.log.debug("Package Manager URL: $url")
 
         url
     }
 
-    private PackageManagerResponse getResponseInternal(String url, MultiPart entity) {
+    private PackageManagerResponse executeCommand(Command command, String path) {
+        def url = buildUrl(path)
+        def entity = buildRequestEntity(command, null)
+
+        getPackageManagerResponse(url, entity)
+    }
+
+    private PackageManagerResponse getPackageManagerResponse(String url, MultiPart entity) {
         def retryLimit = mojo.retryLimit
         def retryDelay = mojo.retryDelay
         def retryCount = 0
@@ -79,10 +88,10 @@ class PackageManagerHttpClient {
         response
     }
 
-    private MultiPart buildRequestEntity(File packageFile) {
+    private MultiPart buildRequestEntity(Command command, File packageFile) {
         def multiPart = new FormDataMultiPart()
 
-        multiPart.field("cmd", mojo.command.parameter)
+        multiPart.field("cmd", command.parameter)
 
         mojo.parameters.each { name, value ->
             multiPart.field(name, value)
@@ -103,10 +112,10 @@ class PackageManagerHttpClient {
                 .type(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .post(PackageManagerResponse, entity)
 
-            mojo.log.debug("Package Manager response = $packageManagerResponse")
+            mojo.log.debug("Package Manager response: $packageManagerResponse")
         } catch (UniformInterfaceException e) {
             if (!mojo.quiet) {
-                mojo.log.info("Error getting response from Package Manager, status code = ${e.response.status}")
+                mojo.log.info("Error getting response from Package Manager, status code: ${e.response.status}")
             }
         } catch (ClientHandlerException e) {
             if (!mojo.quiet) {

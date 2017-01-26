@@ -30,10 +30,9 @@ class PackageManagerHttpClientSpec extends Specification {
         mojo.force = true
 
         def httpClient = new PackageManagerHttpClient(mojo)
-        def packageFile = getPackageFile()
 
         when:
-        httpClient.getResponse(packageFile)
+        httpClient.uploadPackage(packageFile)
 
         then:
         verifyRequests("/", 1)
@@ -52,7 +51,7 @@ class PackageManagerHttpClientSpec extends Specification {
         def httpClient = new PackageManagerHttpClient(mojo)
 
         when:
-        httpClient.getResponse(path)
+        httpClient.installPackage(path)
 
         then:
         verifyRequests(path, 1)

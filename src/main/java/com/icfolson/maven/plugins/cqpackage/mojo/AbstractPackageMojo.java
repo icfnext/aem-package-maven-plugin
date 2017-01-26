@@ -100,7 +100,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
         if (skip) {
             getLog().info("Skipping execution per configuration.");
         } else {
-            final PackageManagerResponse response = getResponse(new PackageManagerHttpClient(this));
+            final PackageManagerResponse response = getPackageManagerResponse(new PackageManagerHttpClient(this));
 
             if (response == null) {
                 throw new MojoExecutionException("Error executing package command.");
@@ -175,5 +175,5 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
         return quiet;
     }
 
-    public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);
+    public abstract PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient);
 }

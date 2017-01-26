@@ -1,10 +1,9 @@
 package com.icfolson.maven.plugins.cqpackage.mojo;
 
-import com.icfolson.maven.plugins.cqpackage.enums.Command;
+import com.google.common.collect.Maps;
 import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
 import com.icfolson.maven.plugins.cqpackage.http.PackageManagerHttpClient;
 import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse;
-import com.google.common.collect.Maps;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -22,11 +21,6 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
     protected boolean force;
 
     @Override
-    public Command getCommand() {
-        return Command.UPLOAD;
-    }
-
-    @Override
     public ResponseFormat getResponseFormat() {
         return ResponseFormat.JSON;
     }
@@ -41,9 +35,9 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
     }
 
     @Override
-    public PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient) {
+    public PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient) {
         final File packageFile = new File(fileName);
 
-        return httpClient.getResponse(packageFile);
+        return httpClient.uploadPackage(packageFile);
     }
 }
