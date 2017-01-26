@@ -1,8 +1,8 @@
-package com.icfolson.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.aempackage.mojo;
 
-import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
-import com.icfolson.maven.plugins.cqpackage.http.PackageManagerHttpClient;
-import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse;
+import com.icfolson.maven.plugins.aempackage.enums.ResponseFormat;
+import com.icfolson.maven.plugins.aempackage.http.PackageManagerHttpClient;
+import com.icfolson.maven.plugins.aempackage.response.PackageManagerResponse;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;

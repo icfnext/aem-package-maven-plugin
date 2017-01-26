@@ -1,10 +1,10 @@
-package com.icfolson.maven.plugins.cqpackage.http
+package com.icfolson.maven.plugins.aempackage.http
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider
-import com.icfolson.maven.plugins.cqpackage.enums.Command
-import com.icfolson.maven.plugins.cqpackage.mojo.PackageMojo
-import com.icfolson.maven.plugins.cqpackage.response.PackageManagerResponse
+import com.icfolson.maven.plugins.aempackage.enums.Command
+import com.icfolson.maven.plugins.aempackage.mojo.PackageMojo
+import com.icfolson.maven.plugins.aempackage.response.PackageManagerResponse
 import com.sun.jersey.api.client.Client
 import com.sun.jersey.api.client.ClientHandlerException
 import com.sun.jersey.api.client.UniformInterfaceException

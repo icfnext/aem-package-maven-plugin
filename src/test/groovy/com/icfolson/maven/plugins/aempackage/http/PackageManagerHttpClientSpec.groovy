@@ -1,8 +1,8 @@
-package com.icfolson.maven.plugins.cqpackage.http
+package com.icfolson.maven.plugins.aempackage.http
 
-import com.icfolson.maven.plugins.cqpackage.mojo.AbstractPackageMojo
-import com.icfolson.maven.plugins.cqpackage.mojo.InstallPackageMojo
-import com.icfolson.maven.plugins.cqpackage.mojo.UploadPackageMojo
+import com.icfolson.maven.plugins.aempackage.mojo.AbstractPackageMojo
+import com.icfolson.maven.plugins.aempackage.mojo.InstallPackageMojo
+import com.icfolson.maven.plugins.aempackage.mojo.UploadPackageMojo
 import groovy.json.JsonBuilder
 import net.jadler.Jadler
 import spock.lang.Specification

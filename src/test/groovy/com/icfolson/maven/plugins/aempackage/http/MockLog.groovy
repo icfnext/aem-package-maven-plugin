@@ -1,4 +1,4 @@
-package com.icfolson.maven.plugins.cqpackage.http
+package com.icfolson.maven.plugins.aempackage.http
 
 import org.apache.maven.plugin.logging.Log
 import org.slf4j.Logger

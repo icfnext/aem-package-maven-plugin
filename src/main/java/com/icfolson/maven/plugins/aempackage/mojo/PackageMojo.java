@@ -1,6 +1,6 @@
-package com.icfolson.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.aempackage.mojo;
 
-import com.icfolson.maven.plugins.cqpackage.enums.ResponseFormat;
+import com.icfolson.maven.plugins.aempackage.enums.ResponseFormat;
 import org.apache.maven.plugin.logging.Log;
 
 import java.util.Map;

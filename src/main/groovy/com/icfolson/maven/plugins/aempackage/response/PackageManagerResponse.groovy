@@ -1,4 +1,4 @@
-package com.icfolson.maven.plugins.cqpackage.response
+package com.icfolson.maven.plugins.aempackage.response
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import groovy.json.JsonBuilder
