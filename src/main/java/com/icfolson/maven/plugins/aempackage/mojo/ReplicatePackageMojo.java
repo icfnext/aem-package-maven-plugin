@@ -1,9 +1,8 @@
-package com.citytechinc.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.aempackage.mojo;
 
-import com.citytechinc.maven.plugins.cqpackage.enums.Command;
-import com.citytechinc.maven.plugins.cqpackage.enums.ResponseFormat;
-import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
-import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
+import com.icfolson.maven.plugins.aempackage.enums.ResponseFormat;
+import com.icfolson.maven.plugins.aempackage.http.PackageManagerHttpClient;
+import com.icfolson.maven.plugins.aempackage.response.PackageManagerResponse;
 import org.apache.maven.plugins.annotations.Execute;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -16,11 +15,6 @@ import java.util.Map;
 public final class ReplicatePackageMojo extends AbstractPackageMojo {
 
     @Override
-    public Command getCommand() {
-        return Command.REPLICATE;
-    }
-
-    @Override
     public ResponseFormat getResponseFormat() {
         return ResponseFormat.JSON;
     }
@@ -31,9 +25,9 @@ public final class ReplicatePackageMojo extends AbstractPackageMojo {
     }
 
     @Override
-    public PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient) {
+    public PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient) {
         final String path = (String) session.getUserProperties().get(PROPERTY_PACKAGE_PATH);
 
-        return httpClient.getResponse(path);
+        return httpClient.replicatePackage(path);
     }
 }

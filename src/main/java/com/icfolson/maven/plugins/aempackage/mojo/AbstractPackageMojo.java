@@ -1,7 +1,7 @@
-package com.citytechinc.maven.plugins.cqpackage.mojo;
+package com.icfolson.maven.plugins.aempackage.mojo;
 
-import com.citytechinc.maven.plugins.cqpackage.http.PackageManagerHttpClient;
-import com.citytechinc.maven.plugins.cqpackage.response.PackageManagerResponse;
+import com.icfolson.maven.plugins.aempackage.http.PackageManagerHttpClient;
+import com.icfolson.maven.plugins.aempackage.response.PackageManagerResponse;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -41,7 +41,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     /**
      * CQ context path.
      */
-    @Parameter(defaultValue = "")
+    @Parameter
     protected String contextPath;
 
     /**
@@ -68,6 +68,18 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     @Parameter(defaultValue = "5")
     protected Integer retryLimit;
 
+    /**
+     * Read timeout in milliseconds.
+     */
+    @Parameter(defaultValue = "30000")
+    protected Integer readTimeout;
+
+    /**
+     * Connection timeout in milliseconds.
+     */
+    @Parameter(defaultValue = "30000")
+    protected Integer connectTimeout;
+
     @Component
     protected MavenSession session;
 
@@ -75,7 +87,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
      * Skip execution of the plugin.
      */
     @Parameter(property = "cq.package.skip", defaultValue = "false")
-    protected boolean skip;
+    protected Boolean skip;
 
     /**
      * CQ user name.
@@ -88,8 +100,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
         if (skip) {
             getLog().info("Skipping execution per configuration.");
         } else {
-            final PackageManagerHttpClient httpClient = new PackageManagerHttpClient(this);
-            final PackageManagerResponse response = getResponse(httpClient);
+            final PackageManagerResponse response = getPackageManagerResponse(new PackageManagerHttpClient(this));
 
             if (response == null) {
                 throw new MojoExecutionException("Error executing package command.");
@@ -111,7 +122,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
 
     @Override
     public String getContextPath() {
-        return contextPath;
+        return contextPath == null ? "" : contextPath;
     }
 
     @Override
@@ -125,18 +136,33 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
-    public int getPort() {
+    public Integer getPort() {
         return port;
     }
 
     @Override
-    public int getRetryDelay() {
+    public Integer getRetryDelay() {
         return retryDelay;
     }
 
     @Override
-    public int getRetryLimit() {
+    public Integer getRetryLimit() {
         return retryLimit;
+    }
+
+    @Override
+    public Integer getReadTimeout() {
+        return readTimeout;
+    }
+
+    @Override
+    public Integer getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    @Override
+    public String getScheme() {
+        return secure ? "https" : "http";
     }
 
     @Override
@@ -145,14 +171,9 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     }
 
     @Override
-    public boolean isQuiet() {
+    public Boolean isQuiet() {
         return quiet;
     }
 
-    @Override
-    public boolean isSecure() {
-        return secure;
-    }
-
-    public abstract PackageManagerResponse getResponse(final PackageManagerHttpClient httpClient);
+    public abstract PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient);
 }

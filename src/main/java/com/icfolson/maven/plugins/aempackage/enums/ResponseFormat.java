@@ -1,4 +1,4 @@
-package com.citytechinc.maven.plugins.cqpackage.enums;
+package com.icfolson.maven.plugins.aempackage.enums;
 
 public enum ResponseFormat {
     JSON(".json"),
@@ -6,7 +6,7 @@ public enum ResponseFormat {
 
     private String extension;
 
-    private ResponseFormat(final String extension) {
+    ResponseFormat(final String extension) {
         this.extension = extension;
     }
 

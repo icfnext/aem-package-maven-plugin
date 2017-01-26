@@ -1,4 +1,4 @@
-package com.citytechinc.maven.plugins.cqpackage.enums;
+package com.icfolson.maven.plugins.aempackage.enums;
 
 public enum Command {
     UPLOAD("upload"),
@@ -7,7 +7,7 @@ public enum Command {
 
     private final String parameter;
 
-    private Command(final String parameter) {
+    Command(final String parameter) {
         this.parameter = parameter;
     }
 
