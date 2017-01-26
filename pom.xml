@@ -6,7 +6,7 @@
     <groupId>com.icfolson.maven.plugins</groupId>
     <artifactId>aem-package-maven-plugin</artifactId>
     <name>AEM Package Maven Plugin</name>
-    <description/>
+    <description>Uploads, installs, and/or replicates the package artifact for a Maven project to AEM Package Manager.</description>
     <version>0.6.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
