@@ -15,7 +15,7 @@ import java.util.Map;
 @Execute(goal = "upload")
 public final class InstallPackageMojo extends AbstractPackageMojo {
 
-    @Parameter(property = "cq.package.install.recursive", defaultValue = "false")
+    @Parameter(property = "aem.package.install.recursive", defaultValue = "false")
     private boolean installRecursive;
 
     @Override

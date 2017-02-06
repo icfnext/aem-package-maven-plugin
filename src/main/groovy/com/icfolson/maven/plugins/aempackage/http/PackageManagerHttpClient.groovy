@@ -33,16 +33,20 @@ class PackageManagerHttpClient {
     }
 
     PackageManagerResponse installPackage(String path) {
-        executeCommand(Command.INSTALL, path)
+        executeCommand(Command.INSTALL, path, null)
     }
 
     PackageManagerResponse replicatePackage(String path) {
-        executeCommand(Command.REPLICATE, path)
+        executeCommand(Command.REPLICATE, path, null)
     }
 
     PackageManagerResponse uploadPackage(File packageFile) {
-        def url = buildUrl("/")
-        def entity = buildRequestEntity(Command.UPLOAD, packageFile)
+        executeCommand(Command.UPLOAD, "/", packageFile)
+    }
+
+    private PackageManagerResponse executeCommand(Command command, String path, File packageFile) {
+        def url = buildUrl(path)
+        def entity = buildRequestEntity(command, packageFile)
 
         getPackageManagerResponse(url, entity)
     }
@@ -57,13 +61,6 @@ class PackageManagerHttpClient {
         mojo.log.debug("Package Manager URL: $url")
 
         url
-    }
-
-    private PackageManagerResponse executeCommand(Command command, String path) {
-        def url = buildUrl(path)
-        def entity = buildRequestEntity(command, null)
-
-        getPackageManagerResponse(url, entity)
     }
 
     private PackageManagerResponse getPackageManagerResponse(String url, MultiPart entity) {

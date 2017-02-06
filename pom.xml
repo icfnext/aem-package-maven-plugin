@@ -6,8 +6,8 @@
     <groupId>com.icfolson.maven.plugins</groupId>
     <artifactId>aem-package-maven-plugin</artifactId>
     <name>AEM Package Maven Plugin</name>
-    <description/>
-    <version>0.5.0</version>
+    <description>Uploads, installs, and/or replicates the package artifact for a Maven project to AEM Package Manager.</description>
+    <version>0.6.0</version>
     <packaging>maven-plugin</packaging>
 
     <organization>
@@ -147,7 +147,7 @@
                     <dependency>
                         <groupId>org.codehaus.groovy</groupId>
                         <artifactId>groovy-all</artifactId>
-                        <version>2.4.6</version>
+                        <version>2.4.8</version>
                     </dependency>
                 </dependencies>
             </plugin>
