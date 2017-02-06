@@ -38,6 +38,8 @@ public final class UploadPackageMojo extends AbstractPackageMojo {
     public PackageManagerResponse getPackageManagerResponse(final PackageManagerHttpClient httpClient) {
         final File packageFile = new File(fileName);
 
+        getLog().debug("Uploading package file: " + fileName);
+
         return httpClient.uploadPackage(packageFile);
     }
 }
