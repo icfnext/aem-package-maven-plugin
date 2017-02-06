@@ -11,35 +11,35 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 public abstract class AbstractPackageMojo extends AbstractMojo implements PackageMojo {
 
-    protected static final String PROPERTY_PACKAGE_PATH = "cq.package.path";
+    protected static final String PROPERTY_PACKAGE_PATH = "aem.package.path";
 
     /**
-     * CQ package name.
+     * AEM package name.
      */
-    @Parameter(property = "cq.package.fileName",
+    @Parameter(property = "aem.package.fileName",
         defaultValue = "${project.build.directory}/${project.build.finalName}.zip")
     protected String fileName;
 
     /**
-     * CQ host name.
+     * AEM host name.
      */
     @Parameter(defaultValue = "localhost")
     protected String host;
 
     /**
-     * CQ password.
+     * AEM password.
      */
     @Parameter(defaultValue = "admin")
     protected String password;
 
     /**
-     * CQ port number.
+     * AEM port number.
      */
     @Parameter(defaultValue = "4502")
     protected Integer port;
 
     /**
-     * CQ context path.
+     * AEM context path.
      */
     @Parameter
     protected String contextPath;
@@ -53,7 +53,7 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     /**
      * Quiet logging when executing package command.
      */
-    @Parameter(property = "cq.package.quiet", defaultValue = "false")
+    @Parameter(property = "aem.package.quiet", defaultValue = "false")
     protected boolean quiet;
 
     /**
@@ -86,11 +86,11 @@ public abstract class AbstractPackageMojo extends AbstractMojo implements Packag
     /**
      * Skip execution of the plugin.
      */
-    @Parameter(property = "cq.package.skip", defaultValue = "false")
+    @Parameter(property = "aem.package.skip", defaultValue = "false")
     protected Boolean skip;
 
     /**
-     * CQ user name.
+     * AEM user name.
      */
     @Parameter(defaultValue = "admin")
     protected String username;

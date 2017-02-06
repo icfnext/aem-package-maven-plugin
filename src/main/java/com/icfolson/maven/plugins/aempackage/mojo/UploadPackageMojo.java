@@ -15,9 +15,9 @@ import java.util.Map;
 public final class UploadPackageMojo extends AbstractPackageMojo {
 
     /**
-     * Force upload of CQ package even if it already exists.
+     * Force upload of AEM package even if it already exists.
      */
-    @Parameter(property = "cq.package.force", defaultValue = "true")
+    @Parameter(property = "aem.package.force", defaultValue = "true")
     protected boolean force;
 
     @Override
