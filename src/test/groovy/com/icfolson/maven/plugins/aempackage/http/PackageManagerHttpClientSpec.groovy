@@ -48,6 +48,8 @@ class PackageManagerHttpClientSpec extends Specification {
 
         init(mojo)
 
+        mojo.dependencyHandling = "required"
+
         def httpClient = new PackageManagerHttpClient(mojo)
 
         when:

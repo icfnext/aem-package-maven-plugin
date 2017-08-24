@@ -19,7 +19,7 @@ public final class InstallPackageMojo extends AbstractPackageMojo {
     private boolean installRecursive;
 
     @Parameter(property = "aem.package.install.dependencyHandling", defaultValue = "required")
-    private String dependencyHandling;
+    protected String dependencyHandling;
 
     @Override
     public ResponseFormat getResponseFormat() {
