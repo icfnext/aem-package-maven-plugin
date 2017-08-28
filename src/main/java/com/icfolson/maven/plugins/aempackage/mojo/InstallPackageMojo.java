@@ -16,7 +16,10 @@ import java.util.Map;
 public final class InstallPackageMojo extends AbstractPackageMojo {
 
     @Parameter(property = "aem.package.install.recursive", defaultValue = "false")
-    private boolean installRecursive;
+    protected boolean installRecursive;
+
+    @Parameter(property = "aem.package.install.dependencyHandling", defaultValue = "required")
+    protected String dependencyHandling;
 
     @Override
     public ResponseFormat getResponseFormat() {
@@ -28,6 +31,7 @@ public final class InstallPackageMojo extends AbstractPackageMojo {
         final Map<String, String> parameters = Maps.newHashMap();
 
         parameters.put("recursive", Boolean.toString(installRecursive));
+        parameters.put("dependencyHandling", dependencyHandling);
 
         return parameters;
     }
