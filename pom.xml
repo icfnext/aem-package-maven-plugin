@@ -7,7 +7,7 @@
     <artifactId>aem-package-maven-plugin</artifactId>
     <name>AEM Package Maven Plugin</name>
     <description>Uploads, installs, and/or replicates the package artifact for a Maven project to AEM Package Manager.</description>
-    <version>0.7.0</version>
+    <version>0.7.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <organization>
