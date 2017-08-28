@@ -1,0 +1,14 @@
+.DS_Store
+.project
+.metadata
+.classpath
+.settings/
+target/
+.idea/
+*.iml
+*.ipr
+*.iws
+/nbactions.xml
+.checkstyle
+.externalToolBuilders
+maven-eclipse.xml
