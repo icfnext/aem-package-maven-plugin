@@ -16,7 +16,7 @@ import java.util.Map;
 public final class InstallPackageMojo extends AbstractPackageMojo {
 
     @Parameter(property = "aem.package.install.recursive", defaultValue = "false")
-    private boolean installRecursive;
+    protected boolean installRecursive;
 
     @Parameter(property = "aem.package.install.dependencyHandling", defaultValue = "required")
     protected String dependencyHandling;
